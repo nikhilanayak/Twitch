@@ -4,9 +4,50 @@ import tempfile
 import urllib.request
 import numpy as np
 import scipy.io.wavfile
+from multiprocessing import Pool
+from threading import Lock
+
+done = 0
+dLock = Lock()
+
+def save(url):
+    global done
+
+    raw_ts = urllib.request.urlopen(url)
+    
+    fname = url.rsplit("/", 1)[1]
+
+    with open(f"/dev/shm/{fname}", "wb") as of:
+        of.write(raw_ts.read())
+
+    
+    with dLock:
+        #done -= 1
+        print("done")
+    #print("finished")
+    #return f"/dev/shm/{fname}"
 
 
 
+def M3Thread(url):
+    global done
+
+    playlist = m3u8.load(url)
+
+    segments = [playlist.base_uri + i.uri for i in playlist.segments]
+
+    done = len(segments)
+    print(done, "segments")
+
+    
+    with Pool(256) as p:
+        res = p.map(save, segments)
+
+
+
+
+
+"""
 def save(base_url, url):
     raw_ts = urllib.request.urlopen(base_url + url)
     with open(f"/dev/shm/{url}", "wb") as of:
@@ -35,26 +76,12 @@ def M3Q(base_url, bs_seconds=1):
                 running_data += curr
             else:
                 return
-    
 
+"""    
 
 
 if __name__ == "__main__":
-    url = "https://d2vjef5jvl6bfs.cloudfront.net/6193974c123fd307b218_marzzzzy_46737524461_1656968794/audio_only/index-dvr.m3u8"
-    #build(url, None)
-    gen = M3Q(url)
+    url = "https://dqrpb9wgowsf5.cloudfront.net/ffaae97ace5de4ec9653_apply_40953784907_1657169034/audio_only/index-dvr.m3u8"
 
-    xs = []
-    for i in range(1):
-        xs += next(gen)
-        
-    scipy.io.wavfile.write(f"out.wav", 44100, np.array(xs))
-        
-
-    #for ind, i in enumerate(gen):
-    #    scipy.io.wavfile.write(f"{ind}.wav", 44100, np.array(i))
-        #print(ind)
-
-
-
-
+    M3Thread(url)
+    

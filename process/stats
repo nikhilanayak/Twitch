@@ -1,0 +1,3 @@
+128 threads, 1903 segments -> 113 seconds
+64 threads, 2584 segments -> 268 seconds
+256 threads, 1795 segments -> 

@@ -27,10 +27,13 @@ avgClips = Average()
 avgLen = Average()
 
 i = 0
+tot = 0
 
 secs = 0
 
 for f in tqdm(files):
+    tot += 1
+
     data = json.load(open(f"data/{f}/clips.json", "r"))
     clips = data["clips"]
 
@@ -47,6 +50,7 @@ for f in tqdm(files):
     secs += data["len"]
     
 
+print(f"succ: {i / tot}")
 print(f"average clips: {avgClips.eval()}")
 print(f"average video length: {avgLen.eval()} seconds")
 print(f"full secs: {secs}")

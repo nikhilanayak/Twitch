@@ -93,30 +93,9 @@ async function getIDs(categories, minViews){
 
 }
 
-/*const categories = [
-	"Rust",
-	"Just Chatting",
-	"VALORANT",
-	"Fall Guys",
-	"Apex Legends",
-	"League Of Legends",
-	"Fortnite",
-	"Escape From Tarkov",
-	"Minecraft",
-	"Call of Duty: Warzone",
-	"Grand Theft Auto V",
-	"Dead by Daylight",
-	"Counter Strike: Global Offense",
-	"World of Warcraft",
-	"Rocket League",
-	"Monopoly Plus",
-	"DOTA 2",
-	"Teamfight Tactics"
-];*/
 
-//categories = JSON.parse("");
 
-const data = await getIDs([categories[0]], 15000);
+const data = await getIDs(categories.slice(0, 100), 15000);
 
 fs.writeFileSync("ids.json", JSON.stringify({"data": data}));
 
